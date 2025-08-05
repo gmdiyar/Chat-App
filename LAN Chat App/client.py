@@ -1,13 +1,13 @@
 import socket
 
 header = 64
-port = 5050
+port = 9090
 format = 'utf-8'
 disconnectMessage = 'Has disconnected.'
 localServer = socket.gethostbyname(socket.gethostname())
-addr = (localServer, port)
+addr = ('192.168.1.74', port)
 
-client = socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(addr)
 
 def send(msg):
@@ -18,5 +18,6 @@ def send(msg):
     client.send(sendLength)
     client.send(message)
 
-send('hello world')
-send(disconnectMessage)
+while True:
+    message = input("Type message: ")
+    send(message)

@@ -1,0 +1,55 @@
+import socket
+import threading
+
+host = socket.gethostbyname(socket.gethostname())
+port = 5050
+
+class Server:
+    
+    def __init__(self, message_callback=None):
+        self.__connected = False
+        self.message_callback = message_callback
+
+    def initiateMultiThreading(self):
+        thread = threading.Thread(target=self.startServer)
+        thread.daemon = True
+        thread.start()
+
+    def startServer(self):
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        try:
+            self.server.bind((host, port))
+            self.server.listen(5)
+            self.__connected = True
+            print(f"Successfully connected on {host}: {port}")
+            while  self.__connected:
+                client, addr = self.server.accept()
+                print(f"New connection on {addr}")
+                client_thread = threading.Thread(target=self.clientHandler, args=(client, addr))
+                client_thread.daemon = True
+                client_thread.start()
+
+        except Exception as e:
+            print(f'Failed to start server, {e}')
+    
+    def clientHandler(self, client, addr):
+        try:
+            while True:
+                data = client.recv(1024)
+                if not data:
+                    print(f"connection closed by {self.addr}")
+                    break
+                message = data.decode('utf-8')
+                print(f"{addr}: {message}")
+
+                if self.message_callback:
+                    self.message_callback(f'{addr}: {message}')
+                    
+        except Exception as e:
+            print(f"Error with client {addr}: {e}")
+        finally:
+            client.close()
+
+    def checkConnection(self):
+        return True if self.__connected else False
