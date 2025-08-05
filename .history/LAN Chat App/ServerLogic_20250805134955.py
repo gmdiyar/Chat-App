@@ -22,10 +22,10 @@ class Server:
             self.server.bind((host, port))
             self.server.listen(5)
             self.__connected = True
-            print(f"Successfully connected on {host}: {port}\n")
+            print(f"Successfully connected on {host}: {port}")
             while  self.__connected:
                 client, addr = self.server.accept()
-                print(f"New connection on {addr}\n")
+                print(f"New connection on {addr}")
                 client_thread = threading.Thread(target=self.clientHandler, args=(client, addr))
                 client_thread.daemon = True
                 client_thread.start()
@@ -38,7 +38,7 @@ class Server:
             while True:
                 data = client.recv(1024)
                 if not data:
-                    print(f"connection closed by {self.addr}\n")
+                    print(f"connection closed by {self.addr}")
                     break
                 message = data.decode('utf-8')
                 print(f"{addr}: {message}")
@@ -47,8 +47,7 @@ class Server:
                     self.message_callback(f'{addr}: {message}')
                     
         except Exception as e:
-            print(f"{addr}: {e}\n, ACTIVE USERS: {threading.active_count() -3}")
-
+            print(f"Error with client {addr}: {e}")
         finally:
             client.close()
 

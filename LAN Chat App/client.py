@@ -1,7 +1,7 @@
 import socket
 
 header = 64
-port = 9090
+port = 5050
 format = 'utf-8'
 disconnectMessage = 'Has disconnected.'
 localServer = socket.gethostbyname(socket.gethostname())
