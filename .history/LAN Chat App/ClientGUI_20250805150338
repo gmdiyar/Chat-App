@@ -1,0 +1,50 @@
+import json
+import random 
+
+class User:
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+        try:
+            with open('users.json', 'r') as file:
+                users = json.load(file) if file else []
+                print(users)
+                if len(users) != 0:
+                    for user in users:
+                        if self.username not in user["username"]:
+                            self.register()
+                        else:
+                            self.login()
+                else:
+                    self.login()
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(e)
+
+    def userIDGenerator(self):
+        newID = random.randint(1,10000)
+        with open('users.json', 'r') as users:
+            while newID in users:
+                newID = random.randint(1,10000)
+
+    def register(self):
+        newUser = {'username': self.username,
+                    'password': self.password, 
+                    'userID': self.userIDGenerator()
+                    }
+        try:
+            with open('users.json', 'r') as file:
+                    users = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError) :
+            users = []
+
+        users.append(newUser)
+
+        with open('users.json', 'w') as file:
+            json.dump(users, file, indent=4)
+
+    def login(self):
+        with open('users.json', 'r') as users:
+            print(f'logged in as {self.username}')
+
+User('asdasd', 'password123!')

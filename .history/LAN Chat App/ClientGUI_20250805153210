@@ -1,0 +1,63 @@
+import json
+import uuid
+
+class User:
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+        try:
+            with open('users.json', 'r') as file:
+                users = json.load(file)
+                print(users)
+                if len(users) == 0:
+                    self.register()
+                elif len(users) != 0:
+                    registeredNames = []
+                    for user in users:
+                        if self.username == user["username"]:
+                            registeredNames.append(user["username"])
+                        else:
+                            pass
+                if self.username in registeredNames:
+                    self.login()
+                    #TODO check for password
+                    pass
+                else:
+                    userNotFoundPrompt = input(f'We\'re sorry, the username {self.username} cannot be found. Would you like to register it?')
+                    while userNotFoundPrompt.lower() != 'yes' and userNotFoundPrompt.lower() != 'no':
+                        userNotFoundPrompt = input(f'Please enter a valid response (yes/no)')
+
+                        if userNotFoundPrompt.lower() == 'yes':
+                            self.register()
+                        
+                            
+        
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(e)
+
+    def userIDGenerator(self):
+        #TODO make a uuid script
+        pass
+
+    def register(self):
+        newUser = {'username': self.username,
+                    'password': self.password, 
+                    'userID': self.userIDGenerator()
+                    }
+        try:
+            with open('users.json', 'r') as file:
+                    users = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError) :
+            users = []
+
+        users.append(newUser)
+
+        with open('users.json', 'w') as file:
+            json.dump(users, file, indent=4)
+
+    def login(self):
+        with open('users.json', 'r') as users:
+            print(f'logged in as {self.username}')
+
+User('saif123', 'password1!')

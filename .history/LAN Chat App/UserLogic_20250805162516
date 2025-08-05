@@ -1,0 +1,91 @@
+import json
+import uuid
+import os
+
+class User:
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.users = self.loadUsers()
+
+        matchedUser = self.findUser()
+        if matchedUser:
+            if matchedUser['password'] == self.password:
+                self.login()
+            else:
+                self.promptRegister()
+
+    def loadUsers(self):
+        try:
+            if os.path.exists('users.json'):
+                with open('users.json', 'r') as file:
+                    return json.load(file)
+        except json.JSONDecodeError as e:
+                print(e)
+    
+    def saveUsers(self):
+        with open('users.json', 'w') as file:
+            
+            # def findUsers(self):
+    #     with open('users.json', 'r') as file:
+    #             users = json.load(file)
+    #     self.registeredUsers = []
+    #     for user in users:
+    #         self.registeredUsers.append(user)
+    #         print(self.registeredUsers)
+    #     return self.registeredUsers
+
+    def userIDGenerator(self):
+        return str(uuid.uuid4())
+
+    def register(self):
+
+        newUser = {'username': self.username,
+                    'password': self.password, 
+                    'userID': self.userIDGenerator()
+                    }
+        
+        for user in self.users:
+                if user == self.username:
+                    if self.password == user['password']:
+                        self.login()
+                        return
+                    else:
+                        print('Wrong password.')
+                        return
+                else:
+                    self.promptRegister()
+       
+        try:
+            with open('users.json', 'r') as file:
+                    users = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError) :
+            users = []
+
+        users[self.userIDGenerator] = (newUser)
+
+        with open('users.json', 'w') as file:
+            json.dump(users, file, indent=4)
+
+    def promptRegister(self):
+        userNotFoundPrompt = input(f'We\'re sorry, the username {self.username} cannot be found. Would you like to register it?')
+        while userNotFoundPrompt.lower() != 'yes' and userNotFoundPrompt.lower() != 'no':
+            userNotFoundPrompt = input(f'Please enter a valid response (yes/no)')
+        if userNotFoundPrompt.lower() == 'yes':
+            self.register()
+            return
+
+    def login(self):
+        with open('users.json', 'r') as users:
+            for user in users:
+                if user['username'] == self.username:
+                    if user['password'] == self.password:
+                        print(f'logged in as {self.username}')
+            else:
+                print('Wrong password.')
+            return
+        self.promptRegister()
+
+
+User('diyar the giyash', 'pass909')

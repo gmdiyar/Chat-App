@@ -1,0 +1,11 @@
+import json
+
+class User:
+    def __init__(self):
+        pass
+    
+    def signUp(self, username, password, password2):
+        try:
+            with open('users.json', 'w') as file:
+                json.dump(newUser, file, indent=4)
+        except Exception as e

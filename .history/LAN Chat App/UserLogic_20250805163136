@@ -1,0 +1,68 @@
+import json
+import uuid
+import datetime
+
+class User:
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.users = self.loadUsers()
+        
+        if self.username in self.users:
+            self.login()
+        else:
+            self.promptRegister()
+
+    def loadUsers(self):
+        try:
+            with open('users.json', 'r') as file:
+                users = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            users = {}
+        return users
+
+    def saveUsers(self):
+        with open('users.json', 'w') as file:
+            json.dump(self.users, file, indent=4)
+
+    def userIDGenerator(self):
+        return str(uuid.uuid4())
+
+    def getDate(self):
+        return datetime.datetime.today()
+
+    def register(self):
+        if self.username in self.users:
+            if self.password == self.users[self.username]['password']:
+                self.login()
+                return
+            else:
+                print('Wrong password.')
+                return
+
+        newUser = {
+            'password': self.password,
+            'userID': self.userIDGenerator(),
+            'dateCreated': self.dateCreated
+        }
+
+        self.users[self.username] = newUser
+        self.saveUsers()
+        print(f"User '{self.username}' registered successfully.")
+
+    def promptRegister(self):
+        userNotFoundPrompt = input(f'Username "{self.username}" not found. Would you like to register it? (yes/no): ')
+        while userNotFoundPrompt.lower() not in ('yes', 'no'):
+            userNotFoundPrompt = input('Please enter a valid response (yes/no): ')
+        if userNotFoundPrompt.lower() == 'yes':
+            self.register()
+
+    def login(self):
+        userData = self.users.get(self.username)
+        if userData and userData['password'] == self.password:
+            print(f'Logged in as {self.username}')
+        else:
+            print('Wrong password.')
+
+User('diyr123', 'pass1233')
