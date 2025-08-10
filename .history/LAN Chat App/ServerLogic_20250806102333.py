@@ -26,6 +26,7 @@ class Server:
             self.server.listen(5)
             self.__connected = True
             print(f"Successfully connected on {host}: {port}\n")
+            self.relayMessage()
             while  self.__connected:
                 client, addr = self.server.accept()
                 print(f"New connection on {addr}\n")

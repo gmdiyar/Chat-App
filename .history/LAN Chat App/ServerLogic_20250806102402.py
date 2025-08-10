@@ -26,6 +26,7 @@ class Server:
             self.server.listen(5)
             self.__connected = True
             print(f"Successfully connected on {host}: {port}\n")
+            self.relayMessage(f'{addr}')
             while  self.__connected:
                 client, addr = self.server.accept()
                 print(f"New connection on {addr}\n")
@@ -42,7 +43,7 @@ class Server:
             loginData = client.recv(1024).decode('utf-8')
             loginJSON = json.loads(loginData)
             if loginJSON.get('type') == 'login':
-                username = loginJSON.get('username')
+                self.username = loginJSON.get('username')
                 self.client_usernames[client] = username
                 print(f'{username} connected from {addr}')
             else:

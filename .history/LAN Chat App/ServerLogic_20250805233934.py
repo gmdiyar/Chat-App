@@ -4,7 +4,7 @@ import json
 
 host = socket.gethostbyname(socket.gethostname())
 port = 5050
-
+@
 class Server:
     
     def __init__(self, message_callback=None):

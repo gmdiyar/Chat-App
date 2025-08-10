@@ -12,7 +12,7 @@ class Server:
         self.message_callback = message_callback
         self.clients = []
         self.client_usernames = {}
-
+        self.username
     def initiateMultiThreading(self):
         thread = threading.Thread(target=self.startServer)
         thread.daemon = True
@@ -26,6 +26,7 @@ class Server:
             self.server.listen(5)
             self.__connected = True
             print(f"Successfully connected on {host}: {port}\n")
+            self.relayMessage(f'{self.username} has connected')
             while  self.__connected:
                 client, addr = self.server.accept()
                 print(f"New connection on {addr}\n")
@@ -42,9 +43,9 @@ class Server:
             loginData = client.recv(1024).decode('utf-8')
             loginJSON = json.loads(loginData)
             if loginJSON.get('type') == 'login':
-                username = loginJSON.get('username')
-                self.client_usernames[client] = username
-                print(f'{username} connected from {addr}')
+                self.username = loginJSON.get('username')
+                self.client_usernames[client] = self.username
+                print(f'{self.username} connected from {addr}')
             else:
                 print('Expected login message, closing.')
                 client.close()

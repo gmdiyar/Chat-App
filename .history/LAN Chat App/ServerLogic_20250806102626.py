@@ -12,7 +12,7 @@ class Server:
         self.message_callback = message_callback
         self.clients = []
         self.client_usernames = {}
-
+        self.username = json.get()
     def initiateMultiThreading(self):
         thread = threading.Thread(target=self.startServer)
         thread.daemon = True

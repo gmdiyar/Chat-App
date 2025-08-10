@@ -12,7 +12,7 @@ class Server:
         self.message_callback = message_callback
         self.clients = []
         self.client_usernames = {}
-
+        self.username = json.get()
     def initiateMultiThreading(self):
         thread = threading.Thread(target=self.startServer)
         thread.daemon = True
@@ -43,7 +43,7 @@ class Server:
             loginJSON = json.loads(loginData)
             if loginJSON.get('type') == 'login':
                 username = loginJSON.get('username')
-                self.client_usernames[client] = username
+                self.client_usernames[client] = self.username
                 print(f'{username} connected from {addr}')
             else:
                 print('Expected login message, closing.')

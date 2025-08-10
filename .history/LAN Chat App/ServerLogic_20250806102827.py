@@ -45,6 +45,7 @@ class Server:
                 username = loginJSON.get('username')
                 self.client_usernames[client] = username
                 print(f'{username} connected from {addr}')
+                self.relayMessage(f'{username} has connected','SERVER')
             else:
                 print('Expected login message, closing.')
                 client.close()
